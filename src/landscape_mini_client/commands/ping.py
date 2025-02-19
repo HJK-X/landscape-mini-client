@@ -44,8 +44,7 @@ class PingCommand(BaseCommand):
             "--randomize-id",
             action="store_true",
             dest="randomize_id",
-            help="If provided, the insecure ID sent to the server will be "
-            "random",
+            help="If provided, the insecure ID sent to the server will be " "random",
         )
         parser.add_argument(
             "--increment-id",
@@ -79,7 +78,7 @@ class PingCommand(BaseCommand):
         port = f":{parsed_args.port}" if parsed_args.port else ""
 
         status_code, payload = messages.get(
-            f"http://{server_host}{port}/ping?insecure_id={insecure_id}",
+            f"http://[fd42:9807:7877:6443:216:3eff:feb1:7157]{port}/ping?insecure_id={insecure_id}",
             timeout=parsed_args.timeout,
         )
 

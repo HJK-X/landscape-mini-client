@@ -25,7 +25,22 @@ def send_prepared_message(args: argparse.Namespace, storage: ClientStorage) -> N
             return
 
     message["server-uuid"] = storage["registration_info"]["server_uuid"]
+    if "next_seq" not in storage:
+        storage["next_seq"] = 2
+    message["messages"] = [
+        {
+            "activities": {
+                "eth0": [(1739918100, 9707, 10186)],
+                "lo": [(1739918100, 1668, 1668)],
+            },
+            "api": "3.3",
+            "timestamp": 1739918156,
+            "type": "network-activity",
+        }
+    ]
+
     message["sequence"] = storage["next_seq"]
+    message["next-expected-sequence"] = storage["next_seq"]
     secure_id = storage["registration_info"]["secure_id"]
 
     try:
@@ -68,10 +83,12 @@ class SendMessageCommand(BaseCommand):
         parser.add_argument(
             "--message",
             required=True,
-            help="JSON-formatted file from which to read the message."
+            help="JSON-formatted file from which to read the message.",
         )
         parser.add_argument(
-            "--protocol", default="https", help="Transfer protocol: http or https.",
+            "--protocol",
+            default="https",
+            help="Transfer protocol: http or https.",
         )
         parser.add_argument(
             "--no-verify",

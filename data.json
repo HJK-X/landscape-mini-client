@@ -1,0 +1,13 @@
+{
+"client-api": "3.8",
+"messages": [
+        {
+        "activities": {"eth0": [[1739918100, 9707, 10186]], "lo": [[1739918100, 1668, 1668]]},
+        "api": "3.3",
+        "timestamp": 1739918156,
+        "type": "network-activity"
+        }
+],
+"server-api": "3.3"
+}
+

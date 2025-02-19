@@ -3,12 +3,15 @@
 from typing import List, Mapping, Tuple, Union
 
 
-def dumps(payload: Union[dict, list, str, int]) -> bytes:
+def dumps(payload: Union[dict, list, tuple, str, int]) -> bytes:
     if isinstance(payload, dict):
         return _dumps_dict(payload)
 
     if isinstance(payload, list):
         return _dumps_list(payload)
+
+    if isinstance(payload, tuple):
+        return _dumps_tuple(payload)
 
     if isinstance(payload, str):
         return f"u{len(payload)}:{payload}".encode()
@@ -20,7 +23,7 @@ def dumps(payload: Union[dict, list, str, int]) -> bytes:
         return f"i{payload};".encode()
 
 
-def _dumps_dict(payload: Mapping[str, Union[dict, list, str, int]]) -> bytes:
+def _dumps_dict(payload: Mapping[str, Union[dict, list, tuple, str, int]]) -> bytes:
     pickled = [b"d"]
 
     for k, v in payload.items():
@@ -33,7 +36,7 @@ def _dumps_dict(payload: Mapping[str, Union[dict, list, str, int]]) -> bytes:
     return pickled
 
 
-def _dumps_list(payload: List[Union[dict, list, str, int]]) -> bytes:
+def _dumps_list(payload: List[Union[dict, list, tuple, str, int]]) -> bytes:
     pickled = [b"l"]
 
     for v in payload:
@@ -45,7 +48,19 @@ def _dumps_list(payload: List[Union[dict, list, str, int]]) -> bytes:
     return pickled
 
 
-def loads(payload: bytes) -> Tuple[Union[dict, list, str, int], int]:
+def _dumps_tuple(payload: List[Union[dict, list, tuple, str, int]]) -> bytes:
+    pickled = [b"t"]
+
+    for v in payload:
+        pickled.append(dumps(v))
+
+    pickled.append(b";")
+    pickled = b"".join(pickled)
+
+    return pickled
+
+
+def loads(payload: bytes) -> Tuple[Union[dict, list, tuple, str, int], int]:
     typecode = chr(payload[0])
 
     if typecode == "d":
