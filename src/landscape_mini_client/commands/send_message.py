@@ -1,6 +1,7 @@
 import argparse
 import json
 import textwrap
+from random import randint
 
 from craft_cli import BaseCommand, emit
 
@@ -27,14 +28,16 @@ def send_prepared_message(args: argparse.Namespace, storage: ClientStorage) -> N
     message["server-uuid"] = storage["registration_info"]["server_uuid"]
     if "next_seq" not in storage:
         storage["next_seq"] = 2
+
+    inc_seq = storage["next_seq"]
     message["messages"] = [
         {
             "activities": {
-                "eth0": [(1739918100, 9707, 10186)],
-                "lo": [(1739918100, 1668, 1668)],
+                "eth0": [(inc_seq * 3, inc_seq * 3, inc_seq * 3)],
+                "lo": [(inc_seq, inc_seq, inc_seq)],
             },
             "api": "3.3",
-            "timestamp": 1739918156,
+            "timestamp": inc_seq * 2,
             "type": "network-activity",
         }
     ]
